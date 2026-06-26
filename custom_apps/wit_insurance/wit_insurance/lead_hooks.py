@@ -158,6 +158,8 @@ def _missing_fields(doc):
 		missing.append("email")
 	if not (doc.mobile_no or doc.phone):
 		missing.append("phone")
+	if not (doc.custom_full_address or doc.city or doc.state):
+		missing.append("address")
 	if not doc.custom_policy_type:
 		missing.append("policy type")
 	if not doc.custom_coverage_limits:
