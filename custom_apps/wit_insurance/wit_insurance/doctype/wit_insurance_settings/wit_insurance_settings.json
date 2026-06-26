@@ -1,0 +1,100 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "creation": "2026-06-26 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 0,
+ "engine": "InnoDB",
+ "field_order": [
+  "lead_mailbox",
+  "default_lead_owner",
+  "default_followup_owner",
+  "enable_vin_decode",
+  "require_intake_review",
+  "follow_up_months",
+  "voip_api_token",
+  "duplicate_match_days",
+  "notes"
+ ],
+ "fields": [
+  {
+   "default": "leads@weinsurethings.com",
+   "fieldname": "lead_mailbox",
+   "fieldtype": "Data",
+   "label": "Lead Mailbox",
+   "reqd": 1
+  },
+  {
+   "fieldname": "default_lead_owner",
+   "fieldtype": "Link",
+   "label": "Default Lead Owner",
+   "options": "User"
+  },
+  {
+   "fieldname": "default_followup_owner",
+   "fieldtype": "Link",
+   "label": "Default Follow-Up Owner",
+   "options": "User"
+  },
+  {
+   "default": "1",
+   "fieldname": "enable_vin_decode",
+   "fieldtype": "Check",
+   "label": "Enable VIN Decode"
+  },
+  {
+   "default": "1",
+   "fieldname": "require_intake_review",
+   "fieldtype": "Check",
+   "label": "Require Intake Review Before Creating Lead"
+  },
+  {
+   "default": "35",
+   "fieldname": "follow_up_months",
+   "fieldtype": "Int",
+   "label": "Violation Follow-Up Months"
+  },
+  {
+   "fieldname": "voip_api_token",
+   "fieldtype": "Password",
+   "label": "VOIP API Token"
+  },
+  {
+   "default": "365",
+   "fieldname": "duplicate_match_days",
+   "fieldtype": "Int",
+   "label": "Duplicate Match Lookback Days"
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Notes"
+  }
+ ],
+ "issingle": 1,
+ "links": [],
+ "modified": "2026-06-26 00:00:00.000000",
+ "module": "WIT Insurance",
+ "name": "WIT Insurance Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "read": 1,
+   "role": "Sales Manager"
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
