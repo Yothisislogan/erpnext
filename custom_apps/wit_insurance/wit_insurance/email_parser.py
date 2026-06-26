@@ -1,7 +1,6 @@
 import re
 
 import frappe
-from frappe.utils.html_utils import clean_html
 
 from wit_insurance.lead_intake import upsert_lead
 from wit_insurance.vin import normalize_vin
@@ -11,6 +10,7 @@ EMAIL_RE = re.compile(r"[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}", re.IGNORECASE)
 PHONE_RE = re.compile(r"(?:\+?1[\s.-]?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}")
 VIN_RE = re.compile(r"\b[A-HJ-NPR-Z0-9]{17}\b", re.IGNORECASE)
 DATE_RE = re.compile(r"\b(\d{4}-\d{2}-\d{2}|\d{1,2}[/-]\d{1,2}[/-]\d{2,4})\b")
+TAG_RE = re.compile(r"<[^>]+>")
 
 
 def after_insert_communication(doc, method=None):
@@ -100,7 +100,13 @@ def _is_lead_mailbox_message(doc):
 def _communication_text(doc):
 	parts = [getattr(doc, "subject", ""), getattr(doc, "content", ""), getattr(doc, "text_content", "")]
 	text = "\n".join(str(part or "") for part in parts if part)
-	return clean_html(text) if "<" in text and ">" in text else text
+	return _strip_html(text) if "<" in text and ">" in text else text
+
+
+def _strip_html(text):
+	text = re.sub(r"<br\s*/?>", "\n", text, flags=re.IGNORECASE)
+	text = re.sub(r"</p>|</div>|</li>", "\n", text, flags=re.IGNORECASE)
+	return TAG_RE.sub(" ", text)
 
 
 def _link_communication(doc, lead_name):
