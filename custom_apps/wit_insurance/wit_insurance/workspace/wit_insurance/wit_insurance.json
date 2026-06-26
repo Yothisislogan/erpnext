@@ -1,0 +1,171 @@
+{
+ "charts": [],
+ "content": "[{\"id\":\"wit_header\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">We Insure Things</span>\",\"col\":12}},{\"id\":\"wit_intro\",\"type\":\"paragraph\",\"data\":{\"text\":\"Insurance CRM workspace for leads, intake reviews, sales tracking, follow-ups, and WIT settings.\",\"col\":12}},{\"id\":\"wit_shortcuts\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"WIT Sales Dashboard\",\"col\":3}},{\"id\":\"wit_intake\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Intake Reviews\",\"col\":3}},{\"id\":\"wit_sales\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"WIT Sales\",\"col\":3}},{\"id\":\"wit_leads\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Leads\",\"col\":3}}]",
+ "creation": "2026-06-26 00:00:00.000000",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "octicon octicon-shield",
+ "idx": 0,
+ "indicator_color": "blue",
+ "is_hidden": 0,
+ "label": "WIT Insurance",
+ "links": [
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "WIT Sales Dashboard",
+   "link_count": 0,
+   "link_to": "wit-sales-dashboard",
+   "onboard": 0,
+   "type": "Page"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Intake Reviews",
+   "link_count": 0,
+   "link_to": "WIT Intake Review",
+   "onboard": 0,
+   "type": "DocType"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "WIT Sales",
+   "link_count": 0,
+   "link_to": "WIT Sale",
+   "onboard": 0,
+   "type": "DocType"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Leads",
+   "link_count": 0,
+   "link_to": "Lead",
+   "onboard": 0,
+   "type": "DocType"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Follow-Up ToDos",
+   "link_count": 0,
+   "link_to": "ToDo",
+   "onboard": 0,
+   "type": "DocType"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "WIT Insurance Settings",
+   "link_count": 0,
+   "link_to": "WIT Insurance Settings",
+   "onboard": 0,
+   "type": "DocType"
+  }
+ ],
+ "modified": "2026-06-26 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "WIT Insurance",
+ "name": "WIT Insurance",
+ "number_cards": [],
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [
+  {
+   "document_type": "WIT Intake Review",
+   "label": "Pending Intake Reviews",
+   "quick_list_filter": "[[\"WIT Intake Review\",\"status\",\"=\",\"Pending Review\",false]]"
+  },
+  {
+   "document_type": "WIT Sale",
+   "label": "Recent WIT Sales",
+   "quick_list_filter": "[]"
+  },
+  {
+   "document_type": "Lead",
+   "label": "Open Leads",
+   "quick_list_filter": "[[\"Lead\",\"status\",\"not in\",[\"Converted\",\"Do Not Contact\"],false]]"
+  },
+  {
+   "document_type": "ToDo",
+   "label": "Open Follow-Ups",
+   "quick_list_filter": "[[\"ToDo\",\"status\",\"=\",\"Open\",false]]"
+  }
+ ],
+ "roles": [
+  {
+   "role": "Sales User"
+  },
+  {
+   "role": "Sales Manager"
+  },
+  {
+   "role": "System Manager"
+  }
+ ],
+ "sequence_id": 1,
+ "shortcuts": [
+  {
+   "color": "Blue",
+   "doc_view": "",
+   "format": "",
+   "label": "WIT Sales Dashboard",
+   "link_to": "wit-sales-dashboard",
+   "stats_filter": "[]",
+   "type": "Page"
+  },
+  {
+   "color": "Blue",
+   "doc_view": "List",
+   "format": "",
+   "label": "Intake Reviews",
+   "link_to": "WIT Intake Review",
+   "stats_filter": "[[\"WIT Intake Review\",\"status\",\"=\",\"Pending Review\",false]]",
+   "type": "DocType"
+  },
+  {
+   "color": "Green",
+   "doc_view": "List",
+   "format": "",
+   "label": "WIT Sales",
+   "link_to": "WIT Sale",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Blue",
+   "doc_view": "List",
+   "format": "",
+   "label": "Leads",
+   "link_to": "Lead",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Orange",
+   "doc_view": "List",
+   "format": "",
+   "label": "Open Follow-Ups",
+   "link_to": "ToDo",
+   "stats_filter": "[[\"ToDo\",\"status\",\"=\",\"Open\",false]]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "",
+   "format": "",
+   "label": "WIT Settings",
+   "link_to": "WIT Insurance Settings",
+   "stats_filter": "[]",
+   "type": "DocType"
+  }
+ ],
+ "title": "WIT Insurance",
+ "type": "Workspace"
+}
