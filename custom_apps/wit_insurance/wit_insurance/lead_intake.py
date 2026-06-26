@@ -1,35 +1,46 @@
 import json
-import re
 
 import frappe
-from frappe import _
-from frappe.utils import getdate, now_datetime
+from frappe.utils import now_datetime
 
+from wit_insurance.matching import find_lead_match
+from wit_insurance.settings import default_lead_owner, intake_review_required, voip_api_token
 from wit_insurance.vin import normalize_vin
-
-PHONE_DIGITS_RE = re.compile(r"\D+")
 
 
 @frappe.whitelist(methods=["POST"])
 def upsert_lead_from_call(**kwargs):
-	"""Create or update a Lead from VOIP/call transcript payload.
+	"""Create/update a Lead or create a review item from VOIP payload.
 
 	Endpoint:
 	/api/method/wit_insurance.lead_intake.upsert_lead_from_call
 	"""
+	_validate_voip_token_if_configured()
 	payload = _payload_from_request(kwargs)
-	lead = upsert_lead(payload, source="VOIP")
+	if intake_review_required():
+		from wit_insurance.intake_review import create_intake_review
+
+		review = create_intake_review(payload, source="VOIP")
+		return {"review": review.name, "status": "Pending Review"}
+
+	lead = upsert_lead(payload, source="VOIP", bypass_review=True)
 	return {"lead": lead.name, "status": "updated"}
 
 
-def upsert_lead(payload: dict, source: str = "API", source_communication: str | None = None):
+def upsert_lead(payload: dict, source: str = "API", source_communication: str | None = None, bypass_review: bool = False):
 	payload = frappe._dict(payload or {})
-	lead = _find_existing_lead(payload)
-	is_new = not lead
+	if not bypass_review and intake_review_required():
+		from wit_insurance.intake_review import create_intake_review
+
+		return create_intake_review(payload, source=source, source_communication=source_communication)
+
+	lead = find_lead_match(payload)
 
 	if not lead:
 		lead = frappe.new_doc("Lead")
 		lead.status = "Lead"
+		if default_lead_owner():
+			lead.lead_owner = default_lead_owner()
 
 	_set_basic_fields(lead, payload)
 	_set_insurance_fields(lead, payload, source_communication=source_communication)
@@ -59,21 +70,19 @@ def _payload_from_request(kwargs):
 	return frappe.form_dict or {}
 
 
-def _find_existing_lead(payload):
-	email = payload.get("email") or payload.get("email_id")
-	if email:
-		name = frappe.db.get_value("Lead", {"email_id": email}, "name")
-		if name:
-			return frappe.get_doc("Lead", name)
+def _validate_voip_token_if_configured():
+	expected = voip_api_token()
+	if not expected:
+		return
 
-	phone = _digits(payload.get("phone") or payload.get("mobile_no"))
-	if phone:
-		candidates = frappe.get_all("Lead", fields=["name", "phone", "mobile_no"], limit=50, order_by="modified desc")
-		for row in candidates:
-			if phone in {_digits(row.phone), _digits(row.mobile_no)}:
-				return frappe.get_doc("Lead", row.name)
+	provided = None
+	if frappe.request:
+		provided = frappe.request.headers.get("X-WIT-VOIP-Token") or frappe.request.headers.get("Authorization")
+	if provided and provided.startswith("Bearer "):
+		provided = provided[7:]
 
-	return None
+	if provided != expected:
+		frappe.throw("Invalid VOIP token", frappe.PermissionError)
 
 
 def _set_basic_fields(lead, payload):
@@ -100,8 +109,8 @@ def _set_basic_fields(lead, payload):
 		if value and not lead.get(field):
 			lead.set(field, value)
 
-	if payload.get("address"):
-		lead.custom_full_address = payload.get("address")
+	if payload.get("address") or payload.get("full_address"):
+		lead.custom_full_address = payload.get("address") or payload.get("full_address")
 
 
 def _set_insurance_fields(lead, payload, source_communication=None):
@@ -164,7 +173,3 @@ def _add_call_communication(lead, payload):
 			"communication_date": now_datetime(),
 		}
 	).insert(ignore_permissions=True)
-
-
-def _digits(value):
-	return PHONE_DIGITS_RE.sub("", str(value or ""))
