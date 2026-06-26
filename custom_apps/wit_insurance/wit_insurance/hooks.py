@@ -28,6 +28,15 @@ doc_events = {
 	"Communication": {
 		"after_insert": "wit_insurance.email_parser.after_insert_communication",
 	},
+	"WIT Intake Review": {
+		"after_insert": "wit_insurance.notifications.intake_review_created",
+	},
+	"WIT Sale": {
+		"after_insert": "wit_insurance.notifications.sale_logged",
+	},
+	"WIT Quote": {
+		"on_update": "wit_insurance.notifications.quote_status_changed",
+	},
 }
 
 scheduler_events = {
