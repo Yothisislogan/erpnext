@@ -1,5 +1,11 @@
 import frappe
-from frappe.utils import add_days, flt, getdate, nowdate
+from frappe.utils import flt, getdate, nowdate
+
+from wit_insurance.settings import (
+	agency_monthly_commission_goal,
+	agency_monthly_policy_goal,
+	agency_monthly_premium_goal,
+)
 
 SALE_FIELDS = [
 	"name",
@@ -59,18 +65,29 @@ def summary(scope="agency", period="MTD", from_date=None, to_date=None):
 		as_dict=True,
 	)[0]
 
+	goals = _goals_for_scope(scope, start)
+	premium = flt(bound.premium)
+	commission = flt(bound.commission)
+	policies = int(bound.policies or 0)
+
 	return {
 		"scope": scope,
 		"period": period,
 		"from_date": start,
 		"to_date": end,
-		"mtdPremium": flt(bound.premium),
-		"mtdCommission": flt(bound.commission),
-		"mtdPolicies": int(bound.policies or 0),
+		"mtdPremium": premium,
+		"mtdCommission": commission,
+		"mtdPolicies": policies,
 		"todayPremium": flt(today_row.premium),
 		"todayPolicies": int(today_row.policies or 0),
 		"pendingPremium": flt(pending.premium),
 		"pendingPolicies": int(pending.policies or 0),
+		"goals": goals,
+		"goalProgress": {
+			"premium": _pct(premium, goals.get("premium_goal")),
+			"policies": _pct(policies, goals.get("policy_goal")),
+			"commission": _pct(commission, goals.get("commission_goal")),
+		},
 	}
 
 
@@ -194,3 +211,28 @@ def _base_conditions(scope, start, end):
 		conditions += " AND producer=%(producer)s"
 		values["producer"] = frappe.session.user
 	return conditions, values
+
+
+def _goals_for_scope(scope, start):
+	if scope == "mine":
+		goal_month = str(start)[:7]
+		row = frappe.get_all(
+			"WIT Producer Goal",
+			filters={"producer": frappe.session.user, "goal_month": goal_month},
+			fields=["premium_goal", "policy_goal", "commission_goal"],
+			limit=1,
+		)
+		if row:
+			return row[0]
+	return {
+		"premium_goal": agency_monthly_premium_goal(),
+		"policy_goal": agency_monthly_policy_goal(),
+		"commission_goal": agency_monthly_commission_goal(),
+	}
+
+
+def _pct(value, goal):
+	goal = flt(goal)
+	if not goal:
+		return 0
+	return min(999, round((flt(value) / goal) * 100, 1))
