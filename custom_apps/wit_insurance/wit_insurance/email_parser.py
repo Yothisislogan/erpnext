@@ -2,6 +2,7 @@ import re
 
 import frappe
 
+from wit_insurance.attachments import link_communication_files
 from wit_insurance.intake_review import create_intake_review
 from wit_insurance.lead_intake import upsert_lead
 from wit_insurance.settings import get_lead_mailbox, intake_review_required
@@ -24,10 +25,12 @@ def after_insert_communication(doc, method=None):
 
 	if intake_review_required():
 		review = create_intake_review(payload, source="Email", source_communication=doc.name)
+		link_communication_files(doc.name, "WIT Intake Review", review.name)
 		_link_communication(doc, review.name, "WIT Intake Review")
 		return
 
 	lead = upsert_lead(payload, source="Email", source_communication=doc.name, bypass_review=True)
+	link_communication_files(doc.name, "Lead", lead.name)
 	_link_communication(doc, lead.name, "Lead")
 
 
