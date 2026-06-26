@@ -1,0 +1,41 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:WIT-GOAL-{producer}-.#####",
+ "creation": "2026-06-26 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 0,
+ "engine": "InnoDB",
+ "field_order": [
+  "producer",
+  "producer_name",
+  "goal_month",
+  "premium_goal",
+  "policy_goal",
+  "commission_goal",
+  "notes"
+ ],
+ "fields": [
+  {"fieldname": "producer", "fieldtype": "Link", "in_list_view": 1, "in_standard_filter": 1, "label": "Producer", "options": "User", "reqd": 1},
+  {"fieldname": "producer_name", "fieldtype": "Data", "in_list_view": 1, "label": "Producer Name"},
+  {"fieldname": "goal_month", "fieldtype": "Data", "in_list_view": 1, "in_standard_filter": 1, "label": "Goal Month", "description": "Use YYYY-MM format, such as 2026-06", "reqd": 1},
+  {"fieldname": "premium_goal", "fieldtype": "Currency", "in_list_view": 1, "label": "Premium Goal"},
+  {"fieldname": "policy_goal", "fieldtype": "Int", "in_list_view": 1, "label": "Policy Count Goal"},
+  {"fieldname": "commission_goal", "fieldtype": "Currency", "in_list_view": 1, "label": "Commission Goal"},
+  {"fieldname": "notes", "fieldtype": "Small Text", "label": "Notes"}
+ ],
+ "links": [],
+ "modified": "2026-06-26 00:00:00.000000",
+ "module": "WIT Insurance",
+ "name": "WIT Producer Goal",
+ "owner": "Administrator",
+ "permissions": [
+  {"create": 1, "delete": 1, "email": 1, "export": 1, "print": 1, "read": 1, "role": "System Manager", "share": 1, "write": 1},
+  {"create": 1, "email": 1, "export": 1, "print": 1, "read": 1, "role": "Sales Manager", "share": 1, "write": 1},
+  {"read": 1, "role": "Sales User"}
+ ],
+ "sort_field": "goal_month",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}
