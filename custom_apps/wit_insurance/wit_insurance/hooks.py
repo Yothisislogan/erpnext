@@ -17,6 +17,7 @@ after_migrate = "wit_insurance.install.after_migrate"
 
 doctype_js = {
 	"Lead": "public/js/lead.js",
+	"WIT Intake Review": "public/js/wit_intake_review.js",
 }
 
 doc_events = {
