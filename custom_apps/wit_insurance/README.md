@@ -20,6 +20,41 @@ It is intentionally separate from ERPNext core logic. The goal is to install thi
 - `WIT Insurance Settings` page
 - `WIT Intake Review` queue for parsed emails and VOIP payloads
 - Duplicate lead matching by email, phone, VIN, and name/ZIP
+- Native ERPNext/Frappe port of the WIT Sales Tracker dashboard
+- `WIT Sale` records for premium, commission, policy count, producer, carrier, line, and status tracking
+
+## Sales dashboard
+
+The previous SuiteCRM branch contained a standalone Flask/SQLite sales tracker with an HTML dashboard. This app ports the useful pieces into Frappe instead of running a separate Flask app.
+
+New DocType:
+
+```text
+WIT Sale
+```
+
+New Desk page:
+
+```text
+/app/wit-sales-dashboard
+```
+
+Dashboard features included in the Frappe version:
+
+```text
+Bound premium
+Commission
+Policy count
+Today premium
+Recent sales table
+Producer leaderboard
+Agency vs mine scope
+MTD / YTD / All periods
+Log Sale dialog
+Lead -> Log Sale button
+```
+
+The Flask-specific pieces were intentionally not copied because Frappe already handles authentication, users, permissions, database records, audit/change history, and Desk pages.
 
 ## Correct lead mailbox
 
