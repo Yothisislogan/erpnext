@@ -50,8 +50,13 @@ frappe.pages['wit-sales-dashboard'].on_page_load = function(wrapper) {
 
 	const state = { scope: 'agency', period: 'MTD', metric: 'premium', search: '' };
 
+	function number(value) {
+		const parsed = parseFloat(value || 0);
+		return Number.isFinite(parsed) ? parsed : 0;
+	}
+
 	function money(value) {
-		return format_currency(value || 0, frappe.defaults.get_default('currency') || 'USD');
+		return format_currency(number(value), frappe.defaults.get_default('currency') || 'USD');
 	}
 
 	function load() {
@@ -117,9 +122,9 @@ frappe.pages['wit-sales-dashboard'].on_page_load = function(wrapper) {
 			box.html('<div class="wit-empty">No leaderboard data yet.</div>');
 			return;
 		}
-		const max = Math.max(...rows.map(r => flt(r.value))) || 1;
+		const max = Math.max(...rows.map(r => number(r.value))) || 1;
 		box.html(rows.map((row, i) => {
-			const value = flt(row.value);
+			const value = number(row.value);
 			const pct = Math.max(4, Math.round(value / max * 100));
 			const display = state.metric === 'policies' ? value : money(value);
 			return `<div class="wit-leader-row"><div><strong>${i + 1}. ${frappe.utils.escape_html(row.producer || 'Unassigned')}</strong><span>${display}</span></div><div class="wit-bar"><i style="width:${pct}%"></i></div></div>`;
