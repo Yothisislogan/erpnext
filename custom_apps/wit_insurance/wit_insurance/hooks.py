@@ -1,11 +1,16 @@
 app_name = "wit_insurance"
-app_title = "WIT Insurance"
+app_title = "We Insure Things"
 app_publisher = "We Insure Things"
-app_description = "Insurance CRM workflows for ERPNext"
+app_description = "WIT branded insurance CRM workflows for ERPNext"
+app_icon = "octicon octicon-shield"
+app_color = "#00AEEF"
 app_email = "logan@weinsurethings.com"
 app_license = "MIT"
 
 required_apps = ["frappe", "erpnext"]
+
+app_include_css = ["/assets/wit_insurance/css/wit_brand.css"]
+web_include_css = ["/assets/wit_insurance/css/wit_brand.css"]
 
 after_install = "wit_insurance.install.after_install"
 after_migrate = "wit_insurance.install.after_migrate"
