@@ -2,6 +2,7 @@ import json
 
 import frappe
 
+from wit_insurance.attachments import link_communication_files
 from wit_insurance.matching import find_lead_candidates
 
 
@@ -40,6 +41,8 @@ def approve_intake_review(review_name: str):
 	payload = json.loads(review.parsed_payload or "{}")
 	_apply_review_edits_to_payload(review, payload)
 	lead = upsert_lead(payload, source=review.source or "Review", source_communication=review.source_communication, bypass_review=True)
+	if review.source_communication:
+		link_communication_files(review.source_communication, "Lead", lead.name)
 	review.status = "Converted"
 	review.converted_lead = lead.name
 	review.save(ignore_permissions=True)
