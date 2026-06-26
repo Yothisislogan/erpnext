@@ -26,4 +26,9 @@ def seed_settings():
 		settings.duplicate_match_days = 365
 	settings.enable_vin_decode = 1 if settings.enable_vin_decode is None else settings.enable_vin_decode
 	settings.require_intake_review = 1 if settings.require_intake_review is None else settings.require_intake_review
+	settings.enable_email_notifications = 1 if settings.enable_email_notifications is None else settings.enable_email_notifications
+	settings.notify_on_intake_review = 1 if settings.notify_on_intake_review is None else settings.notify_on_intake_review
+	settings.notify_on_sale_logged = 1 if settings.notify_on_sale_logged is None else settings.notify_on_sale_logged
+	settings.notify_on_quote_lost = 1 if settings.notify_on_quote_lost is None else settings.notify_on_quote_lost
+	settings.notify_on_quote_sold = 1 if settings.notify_on_quote_sold is None else settings.notify_on_quote_sold
 	settings.save(ignore_permissions=True)
