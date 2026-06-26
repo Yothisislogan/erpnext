@@ -8,11 +8,12 @@ from wit_insurance.settings import duplicate_match_days
 from wit_insurance.vin import normalize_vin
 
 PHONE_DIGITS_RE = re.compile(r"\D+")
+AUTO_MATCH_MIN_SCORE = 70
 
 
 def find_lead_match(payload: dict):
 	candidates = find_lead_candidates(payload)
-	if not candidates:
+	if not candidates or candidates[0]["score"] < AUTO_MATCH_MIN_SCORE:
 		return None
 	return frappe.get_doc("Lead", candidates[0]["lead"])
 
@@ -33,6 +34,7 @@ def find_lead_candidates(payload: dict, limit: int = 5) -> list[dict]:
 				"lead": lead,
 				"score": info["score"],
 				"reasons": sorted(info["reasons"]),
+				"auto_match": info["score"] >= AUTO_MATCH_MIN_SCORE,
 			}
 		)
 
