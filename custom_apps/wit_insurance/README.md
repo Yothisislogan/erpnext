@@ -1,6 +1,6 @@
 # WIT Insurance CRM for ERPNext
 
-This is a portable Frappe custom app scaffold for turning ERPNext into a WIT insurance CRM.
+This is a portable Frappe custom app scaffold for turning ERPNext into a We Insure Things branded insurance CRM.
 
 It is intentionally separate from ERPNext core logic. The goal is to install this beside ERPNext in a bench, not permanently fork ERPNext every time WIT needs an insurance workflow change.
 
@@ -16,6 +16,10 @@ It is intentionally separate from ERPNext core logic. The goal is to install thi
 - Free NHTSA vPIC VIN decode service
 - Inbound email parsing from `leads@weinsurethings.com`
 - API endpoint for the VOIP/call-transcript project
+- WIT brand color layer using `#00AEEF`
+- `WIT Insurance Settings` page
+- `WIT Intake Review` queue for parsed emails and VOIP payloads
+- Duplicate lead matching by email, phone, VIN, and name/ZIP
 
 ## Correct lead mailbox
 
@@ -24,6 +28,43 @@ Use only:
 ```text
 leads@weinsurethings.com
 ```
+
+This is configurable in `WIT Insurance Settings`, but the default is the correct WIT mailbox above.
+
+## WIT Insurance Settings
+
+The settings page controls:
+
+```text
+Lead Mailbox
+Default Lead Owner
+Default Follow-Up Owner
+Enable VIN Decode
+Require Intake Review Before Creating Lead
+Violation Follow-Up Months
+VOIP API Token
+Duplicate Match Lookback Days
+```
+
+Default follow-up rule:
+
+```text
+conviction date + 35 months
+```
+
+## Intake review workflow
+
+By default, incoming email and VOIP payloads do not immediately create Leads. They create a `WIT Intake Review` record first.
+
+Agents can review parsed data, possible duplicate matches, missing information, and then choose:
+
+```text
+Approve to Lead
+Reject
+Open Lead
+```
+
+This prevents bad parses from silently polluting the CRM.
 
 ## Install path
 
@@ -62,7 +103,17 @@ After install, the VOIP app should POST to:
 /api/method/wit_insurance.lead_intake.upsert_lead_from_call
 ```
 
-Use token authentication for production.
+If `VOIP API Token` is set in WIT Insurance Settings, requests must include:
+
+```text
+X-WIT-VOIP-Token: your-token
+```
+
+or:
+
+```text
+Authorization: Bearer your-token
+```
 
 ## Example payload
 
