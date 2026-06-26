@@ -1,0 +1,182 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "autoname": "format:WIT-INTAKE-.#####",
+ "creation": "2026-06-26 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 0,
+ "engine": "InnoDB",
+ "field_order": [
+  "status",
+  "source",
+  "source_communication",
+  "converted_lead",
+  "parse_confidence",
+  "candidate_matches",
+  "lead_name",
+  "email",
+  "phone",
+  "full_address",
+  "policy_type",
+  "coverage_limits",
+  "next_action",
+  "next_follow_up",
+  "call_summary",
+  "parsed_payload",
+  "missing_information",
+  "review_notes"
+ ],
+ "fields": [
+  {
+   "default": "Pending Review",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Pending Review\nApproved\nRejected\nConverted\nNeeds More Info"
+  },
+  {
+   "fieldname": "source",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Source",
+   "options": "Email\nVOIP\nAPI\nManual"
+  },
+  {
+   "fieldname": "source_communication",
+   "fieldtype": "Link",
+   "label": "Source Communication",
+   "options": "Communication"
+  },
+  {
+   "fieldname": "converted_lead",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Converted Lead",
+   "options": "Lead",
+   "read_only": 1
+  },
+  {
+   "fieldname": "parse_confidence",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Parse Confidence",
+   "options": "\nHigh\nMedium\nLow"
+  },
+  {
+   "fieldname": "candidate_matches",
+   "fieldtype": "Code",
+   "label": "Possible Duplicate Matches",
+   "options": "JSON",
+   "read_only": 1
+  },
+  {
+   "fieldname": "lead_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Name"
+  },
+  {
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Email",
+   "options": "Email"
+  },
+  {
+   "fieldname": "phone",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Phone"
+  },
+  {
+   "fieldname": "full_address",
+   "fieldtype": "Small Text",
+   "label": "Address"
+  },
+  {
+   "fieldname": "policy_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Policy Type",
+   "options": "\nPersonal Auto\nHome\nRenters\nCommercial Auto\nGeneral Liability\nWorkers Compensation\nBOP\nSpecialty\nUnknown"
+  },
+  {
+   "fieldname": "coverage_limits",
+   "fieldtype": "Small Text",
+   "label": "Coverage Limits"
+  },
+  {
+   "fieldname": "next_action",
+   "fieldtype": "Small Text",
+   "label": "Next Action"
+  },
+  {
+   "fieldname": "next_follow_up",
+   "fieldtype": "Datetime",
+   "label": "Next Follow-Up"
+  },
+  {
+   "fieldname": "call_summary",
+   "fieldtype": "Long Text",
+   "label": "Call / Email Summary"
+  },
+  {
+   "fieldname": "parsed_payload",
+   "fieldtype": "Code",
+   "label": "Parsed Payload",
+   "options": "JSON"
+  },
+  {
+   "fieldname": "missing_information",
+   "fieldtype": "Small Text",
+   "label": "Missing Information",
+   "read_only": 1
+  },
+  {
+   "fieldname": "review_notes",
+   "fieldtype": "Small Text",
+   "label": "Review Notes"
+  }
+ ],
+ "links": [],
+ "modified": "2026-06-26 00:00:00.000000",
+ "module": "WIT Insurance",
+ "name": "WIT Intake Review",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "role": "Sales Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "Sales User",
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
