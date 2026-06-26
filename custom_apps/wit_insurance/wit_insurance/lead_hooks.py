@@ -3,6 +3,7 @@ import re
 import frappe
 from frappe.utils import add_months, getdate
 
+from wit_insurance.settings import default_followup_owner, follow_up_months, vin_decode_enabled
 from wit_insurance.vin import decode_vin, normalize_vin
 
 DATE_RE = re.compile(r"\b(\d{4}-\d{2}-\d{2}|\d{1,2}[/-]\d{1,2}[/-]\d{2,4})\b")
@@ -62,6 +63,10 @@ def _fill_from_summary(doc):
 
 
 def _decode_vehicle_rows(doc):
+	if not vin_decode_enabled():
+		doc.custom_vin_decode_status = "VIN decode disabled in WIT Insurance Settings"
+		return
+
 	statuses = []
 	for row in doc.get("custom_wit_vehicles") or []:
 		clean_vin = normalize_vin(row.vin)
@@ -96,13 +101,14 @@ def _apply_violation_follow_up_rule(doc):
 		return
 
 	doc.custom_last_violation_conviction_date = conviction_date
-	follow_up = add_months(getdate(conviction_date), 35)
+	months = follow_up_months()
+	follow_up = add_months(getdate(conviction_date), months)
 	doc.custom_violation_follow_up_date = follow_up
 	doc.custom_auto_followup_required = 1
 
 	for row in doc.get("custom_accidents_violations") or []:
 		if row.conviction_date and not row.follow_up_date:
-			row.follow_up_date = add_months(getdate(row.conviction_date), 35)
+			row.follow_up_date = add_months(getdate(row.conviction_date), months)
 
 
 def _create_next_action_todo(doc):
@@ -139,7 +145,7 @@ def _create_unique_todo(doc, description, date):
 	frappe.get_doc(
 		{
 			"doctype": "ToDo",
-			"allocated_to": doc.lead_owner or frappe.session.user,
+			"allocated_to": default_followup_owner() or doc.lead_owner or frappe.session.user,
 			"reference_type": "Lead",
 			"reference_name": doc.name,
 			"description": description,
