@@ -11,7 +11,7 @@ frappe.pages['wit-sales-dashboard'].on_page_load = function(wrapper) {
 				<div>
 					<div class="eyebrow">We Insure Things</div>
 					<h2>Sales Tracker</h2>
-					<p>Track bound premium, commission, policies, producers, carriers, and daily momentum.</p>
+					<p>Track bound premium, commission, policies, producers, carriers, goals, and daily momentum.</p>
 				</div>
 				<div class="wit-sales-actions">
 					<select class="form-control" id="wit-sales-scope">
@@ -33,6 +33,15 @@ frappe.pages['wit-sales-dashboard'].on_page_load = function(wrapper) {
 				<div class="wit-kpi"><div class="label">Commission</div><div class="value" id="wit-kpi-commission">$0</div><div class="sub">calculated from rate</div></div>
 				<div class="wit-kpi"><div class="label">Policies</div><div class="value" id="wit-kpi-policies">0</div><div class="sub">bound</div></div>
 				<div class="wit-kpi"><div class="label">Today</div><div class="value" id="wit-kpi-today">$0</div><div class="sub" id="wit-kpi-today-count">0 policies</div></div>
+			</div>
+
+			<div class="wit-card wit-goals-card">
+				<div class="wit-card-head"><h3>Goal Progress</h3><span class="text-muted" id="wit-goal-scope">Agency MTD</span></div>
+				<div class="wit-goal-grid">
+					<div class="wit-goal-row"><div><strong>Premium</strong><span id="wit-goal-premium-label">No goal set</span></div><div class="wit-bar"><i id="wit-goal-premium-bar" style="width:0%"></i></div></div>
+					<div class="wit-goal-row"><div><strong>Policies</strong><span id="wit-goal-policy-label">No goal set</span></div><div class="wit-bar"><i id="wit-goal-policy-bar" style="width:0%"></i></div></div>
+					<div class="wit-goal-row"><div><strong>Commission</strong><span id="wit-goal-commission-label">No goal set</span></div><div class="wit-bar"><i id="wit-goal-commission-bar" style="width:0%"></i></div></div>
+				</div>
 			</div>
 
 			<div class="wit-sales-grid">
@@ -76,6 +85,7 @@ frappe.pages['wit-sales-dashboard'].on_page_load = function(wrapper) {
 				page.main.find('#wit-kpi-today').text(money(s.todayPremium));
 				page.main.find('#wit-kpi-today-count').text(`${s.todayPolicies || 0} policies`);
 				page.main.find('#wit-kpi-period').text(`${s.period || state.period} · ${s.from_date || ''} to ${s.to_date || ''}`);
+				renderGoals(s);
 			}
 		});
 
@@ -94,6 +104,31 @@ frappe.pages['wit-sales-dashboard'].on_page_load = function(wrapper) {
 				renderLeaderboard((r.message || {}).rows || []);
 			}
 		});
+	}
+
+	function renderGoals(s) {
+		const goals = s.goals || {};
+		const progress = s.goalProgress || {};
+		page.main.find('#wit-goal-scope').text(`${state.scope === 'mine' ? 'My' : 'Agency'} ${state.period}`);
+		renderGoal('premium', s.mtdPremium, goals.premium_goal, progress.premium, true);
+		renderGoal('policy', s.mtdPolicies, goals.policy_goal, progress.policies, false);
+		renderGoal('commission', s.mtdCommission, goals.commission_goal, progress.commission, true);
+	}
+
+	function renderGoal(kind, actual, goal, pct, currency) {
+		const label = page.main.find(`#wit-goal-${kind}-label`);
+		const bar = page.main.find(`#wit-goal-${kind}-bar`);
+		const cleanGoal = number(goal);
+		const cleanPct = Math.min(100, number(pct));
+		if (!cleanGoal) {
+			label.text('No goal set');
+			bar.css('width', '0%');
+			return;
+		}
+		const actualText = currency ? money(actual) : number(actual);
+		const goalText = currency ? money(cleanGoal) : cleanGoal;
+		label.text(`${actualText} / ${goalText} · ${number(pct)}%`);
+		bar.css('width', `${cleanPct}%`);
 	}
 
 	function renderSales(rows) {
