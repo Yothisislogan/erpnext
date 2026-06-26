@@ -22,10 +22,16 @@ def sync_custom_fields():
 				"in_standard_filter": 1,
 			},
 			{
+				"fieldname": "custom_full_address",
+				"label": "Full Address",
+				"fieldtype": "Small Text",
+				"insert_after": "custom_policy_type",
+			},
+			{
 				"fieldname": "custom_coverage_limits",
 				"label": "Coverage Limits",
 				"fieldtype": "Small Text",
-				"insert_after": "custom_policy_type",
+				"insert_after": "custom_full_address",
 			},
 			{
 				"fieldname": "custom_next_action",
