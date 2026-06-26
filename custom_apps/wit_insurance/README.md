@@ -22,6 +22,58 @@ It is intentionally separate from ERPNext core logic. The goal is to install thi
 - Duplicate lead matching by email, phone, VIN, and name/ZIP
 - Native ERPNext/Frappe port of the WIT Sales Tracker dashboard
 - `WIT Sale` records for premium, commission, policy count, producer, carrier, line, and status tracking
+- `WIT Quote` records for carrier quote tracking before a sale is bound
+- WIT Workspace navigation for dashboard, leads, quotes, intake reviews, sales, follow-ups, and settings
+- File linking from lead email Communications to Intake Reviews and approved Leads
+
+## WIT Workspace
+
+After install, agents should see a `WIT Insurance` workspace with shortcuts for:
+
+```text
+WIT Sales Dashboard
+Intake Reviews
+WIT Quotes
+WIT Sales
+Leads
+Open Follow-Ups
+WIT Settings
+```
+
+## Quote tracking
+
+New DocType:
+
+```text
+WIT Quote
+```
+
+Tracks:
+
+```text
+Lead
+Customer
+Producer
+Line
+Carrier
+Quote Number
+Effective Date
+Status
+Premium
+Down Payment
+Monthly Payment
+Term Months
+Presented Date
+Sold Sale
+Lost Reason
+Notes
+```
+
+Leads now include:
+
+```text
+We Insure Things -> Add Quote
+```
 
 ## Sales dashboard
 
@@ -66,6 +118,12 @@ leads@weinsurethings.com
 
 This is configurable in `WIT Insurance Settings`, but the default is the correct WIT mailbox above.
 
+## File handling
+
+When a lead email is parsed from the WIT mailbox, files already attached to the ERPNext `Communication` are linked to the created `WIT Intake Review`.
+
+When that intake review is approved, those same files are linked to the resulting `Lead`.
+
 ## WIT Insurance Settings
 
 The settings page controls:
@@ -106,7 +164,7 @@ This prevents bad parses from silently polluting the CRM.
 Long term, this should live in its own repository named something like:
 
 ```text
-Yothisislogan/wit_insurance
+Yothisislogan/wit_insurance_zoom
 ```
 
 For now it is staged inside this ERPNext fork under:
@@ -160,14 +218,6 @@ Authorization: Bearer your-token
   "address": "123 Main St, Asheville, NC",
   "policy_type": "Personal Auto",
   "coverage_limits": "100/300/100",
-  "drivers": [
-    {
-      "driver_name": "Jane Smith",
-      "date_of_birth": "1988-01-15",
-      "driver_license_number": "NC1234567",
-      "driver_license_state": "NC"
-    }
-  ],
   "vehicles": [
     {"vin": "1HGCM82633A004352"}
   ],
@@ -186,4 +236,4 @@ Authorization: Bearer your-token
 
 ## Security note
 
-Driver DOBs and license numbers are sensitive. Before production, restrict field visibility by role, confirm retention rules, and avoid exposing these fields through public forms or unauthenticated API calls.
+Sensitive customer information, uploaded files, call summaries, and email contents need role-based permissions and retention rules before production.
