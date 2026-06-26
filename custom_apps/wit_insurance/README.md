@@ -1,0 +1,249 @@
+# WIT Insurance CRM for ERPNext
+
+This is a portable Frappe custom app scaffold for turning ERPNext into a We Insure Things branded insurance CRM.
+
+It is intentionally separate from ERPNext core logic. The goal is to install this beside ERPNext in a bench, not permanently fork ERPNext every time WIT needs an insurance workflow change.
+
+## What this MVP adds
+
+- Insurance intake fields on ERPNext `Lead`
+- Driver child table
+- Vehicle / VIN child table
+- Accident / violation child table
+- Call summary and next-action fields
+- Missing-information detection
+- Conviction-date aging follow-up rule
+- Free NHTSA vPIC VIN decode service
+- Inbound email parsing from `leads@weinsurethings.com`
+- API endpoint for the VOIP/call-transcript project
+- WIT brand color layer using `#00AEEF`
+- `WIT Insurance Settings` page
+- `WIT Intake Review` queue for parsed emails and VOIP payloads
+- Duplicate lead matching by email, phone, VIN, and name/ZIP
+- Native ERPNext/Frappe port of the WIT Sales Tracker dashboard
+- `WIT Sale` records for premium, commission, policy count, producer, carrier, line, and status tracking
+- `WIT Quote` records for carrier quote tracking before a sale is bound
+- `WIT Producer Goal` records for producer-specific monthly goals
+- WIT Workspace navigation for dashboard, leads, quotes, intake reviews, sales, follow-ups, and settings
+- File linking from lead email Communications to Intake Reviews and approved Leads
+- Native Frappe email notifications for intake reviews, bound sales, and quote status changes
+- Dashboard goal progress for premium, policies, and commission
+
+## WIT Workspace
+
+After install, agents should see a `WIT Insurance` workspace with shortcuts for:
+
+```text
+WIT Sales Dashboard
+Intake Reviews
+WIT Quotes
+WIT Sales
+Leads
+Open Follow-Ups
+WIT Settings
+```
+
+## Quote tracking
+
+New DocType:
+
+```text
+WIT Quote
+```
+
+Tracks:
+
+```text
+Lead
+Customer
+Producer
+Line
+Carrier
+Quote Number
+Effective Date
+Status
+Premium
+Down Payment
+Monthly Payment
+Term Months
+Presented Date
+Sold Sale
+Lost Reason
+Notes
+```
+
+Leads now include:
+
+```text
+We Insure Things -> Add Quote
+```
+
+## Sales dashboard
+
+The previous SuiteCRM branch contained a standalone Flask/SQLite sales tracker with an HTML dashboard. This app ports the useful pieces into Frappe instead of running a separate Flask app.
+
+New DocType:
+
+```text
+WIT Sale
+```
+
+New Desk page:
+
+```text
+/app/wit-sales-dashboard
+```
+
+Dashboard features included in the Frappe version:
+
+```text
+Bound premium
+Commission
+Policy count
+Today premium
+Recent sales table
+Producer leaderboard
+Agency vs mine scope
+MTD / YTD / All periods
+Goal progress bars
+Log Sale dialog
+Lead -> Log Sale button
+```
+
+## Goals
+
+Agency goals live in `WIT Insurance Settings`:
+
+```text
+Agency Monthly Premium Goal
+Agency Monthly Policy Count Goal
+Agency Monthly Commission Goal
+```
+
+Producer-specific goals live in:
+
+```text
+WIT Producer Goal
+```
+
+The dashboard uses agency goals when scope is `Agency` and producer goals when scope is `Mine`.
+
+## Notifications
+
+Native Frappe email notifications are wired for:
+
+```text
+New WIT Intake Review
+New Bound WIT Sale
+WIT Quote marked Lost
+WIT Quote marked Sold
+```
+
+Notification controls live in `WIT Insurance Settings`.
+
+## Correct lead mailbox
+
+Use only:
+
+```text
+leads@weinsurethings.com
+```
+
+This is configurable in `WIT Insurance Settings`, but the default is the correct WIT mailbox above.
+
+## File handling
+
+When a lead email is parsed from the WIT mailbox, files already attached to the ERPNext `Communication` are linked to the created `WIT Intake Review`.
+
+When that intake review is approved, those same files are linked to the resulting `Lead`.
+
+## WIT Insurance Settings
+
+The settings page controls:
+
+```text
+Lead Mailbox
+Default Lead Owner
+Default Follow-Up Owner
+Enable VIN Decode
+Require Intake Review Before Creating Lead
+Violation Follow-Up Months
+VOIP API Token
+Duplicate Match Lookback Days
+Email Notifications
+Notification Recipients
+Agency Goals
+```
+
+Default follow-up rule:
+
+```text
+conviction date + 35 months
+```
+
+## Intake review workflow
+
+By default, incoming email and VOIP payloads do not immediately create Leads. They create a `WIT Intake Review` record first.
+
+Agents can review parsed data, possible duplicate matches, missing information, and then choose:
+
+```text
+Approve to Lead
+Reject
+Open Lead
+```
+
+This prevents bad parses from silently polluting the CRM.
+
+## Install path
+
+Long term, this should live in its own repository named something like:
+
+```text
+Yothisislogan/wit_insurance_zoom
+```
+
+For now it is staged inside this ERPNext fork under:
+
+```text
+custom_apps/wit_insurance
+```
+
+To test in a bench, move or copy this folder to:
+
+```text
+frappe-bench/apps/wit_insurance
+```
+
+Then run:
+
+```bash
+bench --site your-site.local install-app wit_insurance
+bench --site your-site.local migrate
+bench build
+bench restart
+```
+
+## VOIP endpoint
+
+After install, the VOIP app should POST to:
+
+```text
+/api/method/wit_insurance.lead_intake.upsert_lead_from_call
+```
+
+If `VOIP API Token` is set in WIT Insurance Settings, requests must include:
+
+```text
+X-WIT-VOIP-Token: your-token
+```
+
+or:
+
+```text
+Authorization: Bearer your-token
+```
+
+## Security note
+
+Sensitive customer information, uploaded files, call summaries, and email contents need role-based permissions and retention rules before production.

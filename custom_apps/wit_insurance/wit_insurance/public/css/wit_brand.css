@@ -1,0 +1,283 @@
+:root {
+	--wit-blue: #00AEEF;
+	--wit-blue-dark: #007EAE;
+	--wit-ink: #06121D;
+	--wit-soft-blue: rgba(0, 174, 239, 0.1);
+	--wit-border: rgba(0, 174, 239, 0.28);
+	--wit-success: #15a05c;
+}
+
+/* Keep the branding light so ERPNext remains usable and accessible. */
+[data-page-route="Form/Lead"] .layout-main-section-wrapper,
+[data-page-route="Form/WIT Intake Review"] .layout-main-section-wrapper,
+[data-page-route="Form/WIT Insurance Settings"] .layout-main-section-wrapper,
+[data-page-route="Form/WIT Sale"] .layout-main-section-wrapper,
+[data-page-route="Form/WIT Quote"] .layout-main-section-wrapper,
+[data-page-route="Form/WIT Producer Goal"] .layout-main-section-wrapper {
+	border-top: 4px solid var(--wit-blue);
+}
+
+[data-page-route="Form/Lead"] .form-tabs-list .nav-link.active,
+[data-page-route="Form/Lead"] .form-tabs-list .nav-link:hover,
+[data-page-route="Form/WIT Intake Review"] .form-tabs-list .nav-link.active,
+[data-page-route="Form/WIT Intake Review"] .form-tabs-list .nav-link:hover {
+	color: var(--wit-blue-dark);
+}
+
+[data-page-route="Form/Lead"] .form-dashboard .comment-box[data-color="orange"],
+[data-page-route="Form/WIT Intake Review"] .form-dashboard .comment-box[data-color="orange"] {
+	border-left: 4px solid var(--wit-blue);
+	background: var(--wit-soft-blue);
+}
+
+[data-page-route="Form/Lead"] .btn-primary,
+[data-page-route="Form/Lead"] .standard-actions .btn-primary,
+[data-page-route="Form/WIT Intake Review"] .btn-primary,
+[data-page-route="Form/WIT Intake Review"] .standard-actions .btn-primary,
+[data-page-route="wit-sales-dashboard"] .btn-primary {
+	background-color: var(--wit-blue);
+	border-color: var(--wit-blue);
+}
+
+[data-page-route="Form/Lead"] .btn-primary:hover,
+[data-page-route="Form/Lead"] .standard-actions .btn-primary:hover,
+[data-page-route="Form/WIT Intake Review"] .btn-primary:hover,
+[data-page-route="Form/WIT Intake Review"] .standard-actions .btn-primary:hover,
+[data-page-route="wit-sales-dashboard"] .btn-primary:hover {
+	background-color: var(--wit-blue-dark);
+	border-color: var(--wit-blue-dark);
+}
+
+[data-fieldname="custom_wit_insurance_tab"] .section-head,
+[data-fieldname="custom_driver_vehicle_section"] .section-head,
+[data-fieldname="custom_incident_section"] .section-head,
+[data-fieldname="custom_follow_up_rules_section"] .section-head {
+	color: var(--wit-ink);
+	border-left: 4px solid var(--wit-blue);
+	padding-left: 10px;
+}
+
+[data-fieldname="custom_missing_information"] .control-input-wrapper,
+[data-fieldname="custom_vin_decode_status"] .control-input-wrapper,
+[data-fieldname="missing_information"] .control-input-wrapper,
+[data-fieldname="candidate_matches"] .control-input-wrapper {
+	background: var(--wit-soft-blue);
+	border: 1px solid var(--wit-border);
+	border-radius: 8px;
+	padding: 6px;
+}
+
+.wit-insurance-banner {
+	background: linear-gradient(90deg, rgba(0, 174, 239, 0.18), rgba(0, 174, 239, 0.04));
+	border: 1px solid var(--wit-border);
+	border-left: 5px solid var(--wit-blue);
+	border-radius: 10px;
+	margin-bottom: 12px;
+	padding: 10px 12px;
+}
+
+.wit-insurance-banner strong {
+	color: var(--wit-ink);
+}
+
+.wit-insurance-banner small {
+	color: var(--text-muted);
+}
+
+.wit-sales-page {
+	padding: 8px 0 32px;
+}
+
+.wit-sales-hero {
+	background: radial-gradient(900px 260px at 100% 0%, rgba(0, 174, 239, 0.22), transparent 60%), var(--wit-ink);
+	border-radius: 18px;
+	color: #fff;
+	display: flex;
+	justify-content: space-between;
+	gap: 18px;
+	padding: 24px;
+	margin-bottom: 18px;
+	box-shadow: 0 10px 30px rgba(0, 174, 239, 0.18);
+}
+
+.wit-sales-hero .eyebrow {
+	color: rgba(255,255,255,.68);
+	font-size: 12px;
+	font-weight: 700;
+	letter-spacing: .14em;
+	text-transform: uppercase;
+}
+
+.wit-sales-hero h2 {
+	color: #fff;
+	font-size: 30px;
+	margin: 4px 0;
+}
+
+.wit-sales-hero p {
+	color: rgba(255,255,255,.74);
+	margin: 0;
+}
+
+.wit-sales-actions {
+	display: flex;
+	align-items: flex-start;
+	gap: 10px;
+	flex-wrap: wrap;
+}
+
+.wit-sales-actions .form-control {
+	background: rgba(255,255,255,.95);
+	min-width: 110px;
+}
+
+.wit-kpi-grid {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: 14px;
+	margin-bottom: 18px;
+}
+
+.wit-kpi,
+.wit-card {
+	background: var(--card-bg, #fff);
+	border: 1px solid var(--wit-border);
+	border-radius: 16px;
+	box-shadow: 0 8px 26px rgba(0, 174, 239, 0.08);
+}
+
+.wit-kpi {
+	padding: 18px;
+}
+
+.wit-kpi .label {
+	color: var(--text-muted);
+	font-size: 12px;
+	font-weight: 700;
+	letter-spacing: .06em;
+	text-transform: uppercase;
+}
+
+.wit-kpi .value {
+	color: var(--wit-ink);
+	font-size: 28px;
+	font-weight: 800;
+	margin-top: 8px;
+}
+
+.wit-kpi .sub {
+	color: var(--text-muted);
+	font-size: 12px;
+	margin-top: 4px;
+}
+
+.wit-goals-card {
+	margin-bottom: 18px;
+}
+
+.wit-goal-grid {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 14px;
+}
+
+.wit-goal-row {
+	background: var(--control-bg);
+	border-radius: 12px;
+	padding: 12px;
+}
+
+.wit-goal-row > div:first-child {
+	display: flex;
+	justify-content: space-between;
+	gap: 10px;
+}
+
+.wit-goal-row span {
+	color: var(--text-muted);
+	font-size: 12px;
+}
+
+.wit-sales-grid {
+	display: grid;
+	grid-template-columns: 1.6fr .8fr;
+	gap: 16px;
+}
+
+.wit-card {
+	padding: 16px;
+}
+
+.wit-card-head {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	margin-bottom: 10px;
+}
+
+.wit-card-head h3 {
+	margin: 0;
+}
+
+.wit-card-head .form-control {
+	max-width: 220px;
+}
+
+.wit-pill {
+	border-radius: 999px;
+	display: inline-block;
+	font-size: 12px;
+	font-weight: 700;
+	padding: 3px 10px;
+}
+
+.wit-pill.bound { background: rgba(21, 160, 92, 0.14); color: var(--wit-success); }
+.wit-pill.pending, .wit-pill.quoted { background: var(--wit-soft-blue); color: var(--wit-blue-dark); }
+.wit-pill.lost, .wit-pill.cancelled { background: rgba(255, 104, 104, .16); color: #d83b3b; }
+
+.wit-leader-row {
+	border-bottom: 1px solid var(--border-color);
+	padding: 12px 0;
+}
+
+.wit-leader-row:last-child {
+	border-bottom: 0;
+}
+
+.wit-leader-row > div:first-child {
+	display: flex;
+	justify-content: space-between;
+	gap: 10px;
+}
+
+.wit-bar {
+	background: var(--control-bg);
+	border-radius: 999px;
+	height: 8px;
+	margin-top: 8px;
+	overflow: hidden;
+}
+
+.wit-bar i {
+	background: linear-gradient(90deg, var(--wit-blue), var(--wit-blue-dark));
+	display: block;
+	height: 100%;
+}
+
+.wit-empty {
+	color: var(--text-muted);
+	padding: 24px 0;
+	text-align: center;
+}
+
+@media (max-width: 980px) {
+	.wit-kpi-grid,
+	.wit-sales-grid,
+	.wit-goal-grid {
+		grid-template-columns: 1fr;
+	}
+	.wit-sales-hero {
+		flex-direction: column;
+	}
+}
