@@ -1,0 +1,184 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:WIT-SALE-.#####",
+ "creation": "2026-06-26 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 0,
+ "engine": "InnoDB",
+ "field_order": [
+  "sales_date",
+  "producer",
+  "producer_name",
+  "customer",
+  "lead",
+  "line",
+  "carrier",
+  "business_type",
+  "status",
+  "premium",
+  "commission_rate",
+  "commission",
+  "notes",
+  "nowcerts_section",
+  "nowcerts_insured_id",
+  "nowcerts_policy_id",
+  "nowcerts_pushed_at"
+ ],
+ "fields": [
+  {
+   "fieldname": "sales_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "producer",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Producer",
+   "options": "User"
+  },
+  {
+   "fieldname": "producer_name",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Producer Name"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Customer",
+   "reqd": 1
+  },
+  {
+   "fieldname": "lead",
+   "fieldtype": "Link",
+   "label": "Lead",
+   "options": "Lead"
+  },
+  {
+   "fieldname": "line",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Line",
+   "options": "\nAuto\nHome\nBundle (Auto+Home)\nRenters\nCommercial\nGeneral Liability\nWorkers Comp\nLife\nHealth\nUmbrella\nOther"
+  },
+  {
+   "fieldname": "carrier",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Carrier"
+  },
+  {
+   "fieldname": "business_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Type",
+   "options": "\nNew\nRenewal\nRewrite\nCross-Sell\nUpsell\nReinstatement\nOther"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Quoted\nPending\nBound\nLost\nCancelled",
+   "reqd": 1,
+   "default": "Bound"
+  },
+  {
+   "fieldname": "premium",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Premium"
+  },
+  {
+   "fieldname": "commission_rate",
+   "fieldtype": "Percent",
+   "label": "Commission Rate"
+  },
+  {
+   "fieldname": "commission",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Commission",
+   "read_only": 1
+  },
+  {
+   "fieldname": "notes",
+   "fieldtype": "Small Text",
+   "label": "Notes"
+  },
+  {
+   "fieldname": "nowcerts_section",
+   "fieldtype": "Section Break",
+   "label": "NowCerts"
+  },
+  {
+   "fieldname": "nowcerts_insured_id",
+   "fieldtype": "Data",
+   "label": "NowCerts Insured ID",
+   "read_only": 1
+  },
+  {
+   "fieldname": "nowcerts_policy_id",
+   "fieldtype": "Data",
+   "label": "NowCerts Policy ID",
+   "read_only": 1
+  },
+  {
+   "fieldname": "nowcerts_pushed_at",
+   "fieldtype": "Datetime",
+   "label": "NowCerts Pushed At",
+   "read_only": 1
+  }
+ ],
+ "links": [],
+ "modified": "2026-06-26 00:00:00.000000",
+ "module": "WIT Insurance",
+ "name": "WIT Sale",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "role": "Sales Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "Sales User",
+   "write": 1
+  }
+ ],
+ "sort_field": "sales_date",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}
