@@ -23,8 +23,11 @@ It is intentionally separate from ERPNext core logic. The goal is to install thi
 - Native ERPNext/Frappe port of the WIT Sales Tracker dashboard
 - `WIT Sale` records for premium, commission, policy count, producer, carrier, line, and status tracking
 - `WIT Quote` records for carrier quote tracking before a sale is bound
+- `WIT Producer Goal` records for producer-specific monthly goals
 - WIT Workspace navigation for dashboard, leads, quotes, intake reviews, sales, follow-ups, and settings
 - File linking from lead email Communications to Intake Reviews and approved Leads
+- Native Frappe email notifications for intake reviews, bound sales, and quote status changes
+- Dashboard goal progress for premium, policies, and commission
 
 ## WIT Workspace
 
@@ -102,11 +105,41 @@ Recent sales table
 Producer leaderboard
 Agency vs mine scope
 MTD / YTD / All periods
+Goal progress bars
 Log Sale dialog
 Lead -> Log Sale button
 ```
 
-The Flask-specific pieces were intentionally not copied because Frappe already handles authentication, users, permissions, database records, audit/change history, and Desk pages.
+## Goals
+
+Agency goals live in `WIT Insurance Settings`:
+
+```text
+Agency Monthly Premium Goal
+Agency Monthly Policy Count Goal
+Agency Monthly Commission Goal
+```
+
+Producer-specific goals live in:
+
+```text
+WIT Producer Goal
+```
+
+The dashboard uses agency goals when scope is `Agency` and producer goals when scope is `Mine`.
+
+## Notifications
+
+Native Frappe email notifications are wired for:
+
+```text
+New WIT Intake Review
+New Bound WIT Sale
+WIT Quote marked Lost
+WIT Quote marked Sold
+```
+
+Notification controls live in `WIT Insurance Settings`.
 
 ## Correct lead mailbox
 
@@ -137,6 +170,9 @@ Require Intake Review Before Creating Lead
 Violation Follow-Up Months
 VOIP API Token
 Duplicate Match Lookback Days
+Email Notifications
+Notification Recipients
+Agency Goals
 ```
 
 Default follow-up rule:
@@ -206,32 +242,6 @@ or:
 
 ```text
 Authorization: Bearer your-token
-```
-
-## Example payload
-
-```json
-{
-  "name": "Jane Smith",
-  "email": "jane@example.com",
-  "phone": "555-555-5555",
-  "address": "123 Main St, Asheville, NC",
-  "policy_type": "Personal Auto",
-  "coverage_limits": "100/300/100",
-  "vehicles": [
-    {"vin": "1HGCM82633A004352"}
-  ],
-  "incidents": [
-    {
-      "incident_type": "Violation",
-      "conviction_date": "2024-04-01",
-      "description": "Speeding ticket"
-    }
-  ],
-  "call_summary": "Customer wants personal auto quote with one speeding ticket.",
-  "next_action": "Call back with quote options",
-  "next_follow_up": "2026-06-30 09:00:00"
-}
 ```
 
 ## Security note
