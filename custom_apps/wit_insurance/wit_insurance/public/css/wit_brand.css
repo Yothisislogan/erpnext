@@ -7,28 +7,37 @@
 }
 
 /* Keep the branding light so ERPNext remains usable and accessible. */
-[data-page-route="Form/Lead"] .layout-main-section-wrapper {
+[data-page-route="Form/Lead"] .layout-main-section-wrapper,
+[data-page-route="Form/WIT Intake Review"] .layout-main-section-wrapper,
+[data-page-route="Form/WIT Insurance Settings"] .layout-main-section-wrapper {
 	border-top: 4px solid var(--wit-blue);
 }
 
 [data-page-route="Form/Lead"] .form-tabs-list .nav-link.active,
-[data-page-route="Form/Lead"] .form-tabs-list .nav-link:hover {
+[data-page-route="Form/Lead"] .form-tabs-list .nav-link:hover,
+[data-page-route="Form/WIT Intake Review"] .form-tabs-list .nav-link.active,
+[data-page-route="Form/WIT Intake Review"] .form-tabs-list .nav-link:hover {
 	color: var(--wit-blue-dark);
 }
 
-[data-page-route="Form/Lead"] .form-dashboard .comment-box[data-color="orange"] {
+[data-page-route="Form/Lead"] .form-dashboard .comment-box[data-color="orange"],
+[data-page-route="Form/WIT Intake Review"] .form-dashboard .comment-box[data-color="orange"] {
 	border-left: 4px solid var(--wit-blue);
 	background: var(--wit-soft-blue);
 }
 
 [data-page-route="Form/Lead"] .btn-primary,
-[data-page-route="Form/Lead"] .standard-actions .btn-primary {
+[data-page-route="Form/Lead"] .standard-actions .btn-primary,
+[data-page-route="Form/WIT Intake Review"] .btn-primary,
+[data-page-route="Form/WIT Intake Review"] .standard-actions .btn-primary {
 	background-color: var(--wit-blue);
 	border-color: var(--wit-blue);
 }
 
 [data-page-route="Form/Lead"] .btn-primary:hover,
-[data-page-route="Form/Lead"] .standard-actions .btn-primary:hover {
+[data-page-route="Form/Lead"] .standard-actions .btn-primary:hover,
+[data-page-route="Form/WIT Intake Review"] .btn-primary:hover,
+[data-page-route="Form/WIT Intake Review"] .standard-actions .btn-primary:hover {
 	background-color: var(--wit-blue-dark);
 	border-color: var(--wit-blue-dark);
 }
@@ -43,7 +52,9 @@
 }
 
 [data-fieldname="custom_missing_information"] .control-input-wrapper,
-[data-fieldname="custom_vin_decode_status"] .control-input-wrapper {
+[data-fieldname="custom_vin_decode_status"] .control-input-wrapper,
+[data-fieldname="missing_information"] .control-input-wrapper,
+[data-fieldname="candidate_matches"] .control-input-wrapper {
 	background: var(--wit-soft-blue);
 	border: 1px solid var(--wit-border);
 	border-radius: 8px;
