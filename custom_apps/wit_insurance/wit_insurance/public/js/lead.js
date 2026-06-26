@@ -7,6 +7,10 @@ frappe.ui.form.on('Lead', {
 				frm.save();
 			}, __('We Insure Things'));
 
+			frm.add_custom_button(__('Add Quote'), () => {
+				open_quote_from_lead(frm);
+			}, __('We Insure Things'));
+
 			frm.add_custom_button(__('Log Sale'), () => {
 				open_sale_dialog_from_lead(frm);
 			}, __('We Insure Things'));
@@ -33,13 +37,25 @@ function add_wit_banner(frm) {
 	frm.dashboard.wrapper.prepend(`
 		<div class="wit-insurance-banner">
 			<strong>We Insure Things CRM</strong><br>
-			<small>${frappe.utils.escape_html(policyType)} intake, follow-up, VIN, call-summary, and sales workflow</small>
+			<small>${frappe.utils.escape_html(policyType)} intake, quote, follow-up, VIN, call-summary, and sales workflow</small>
 		</div>
 	`);
 }
 
+function open_quote_from_lead(frm) {
+	const customer = lead_customer_name(frm);
+	const line = map_policy_type_to_line(frm.doc.custom_policy_type);
+	frappe.new_doc('WIT Quote', {
+		customer,
+		lead: frm.doc.name,
+		quote_date: frappe.datetime.get_today(),
+		line,
+		status: 'Quoted'
+	});
+}
+
 function open_sale_dialog_from_lead(frm) {
-	const customer = frm.doc.lead_name || `${frm.doc.first_name || ''} ${frm.doc.last_name || ''}`.trim() || frm.doc.company_name;
+	const customer = lead_customer_name(frm);
 	const line = map_policy_type_to_line(frm.doc.custom_policy_type);
 	const dialog = new frappe.ui.Dialog({
 		title: 'Log WIT Sale',
@@ -71,6 +87,10 @@ function open_sale_dialog_from_lead(frm) {
 		}
 	});
 	dialog.show();
+}
+
+function lead_customer_name(frm) {
+	return frm.doc.lead_name || `${frm.doc.first_name || ''} ${frm.doc.last_name || ''}`.trim() || frm.doc.company_name;
 }
 
 function map_policy_type_to_line(policyType) {
