@@ -2,10 +2,11 @@ import re
 
 import frappe
 
+from wit_insurance.intake_review import create_intake_review
 from wit_insurance.lead_intake import upsert_lead
+from wit_insurance.settings import get_lead_mailbox, intake_review_required
 from wit_insurance.vin import normalize_vin
 
-LEADS_MAILBOX = "leads@weinsurethings.com"
 EMAIL_RE = re.compile(r"[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}", re.IGNORECASE)
 PHONE_RE = re.compile(r"(?:\+?1[\s.-]?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}")
 VIN_RE = re.compile(r"\b[A-HJ-NPR-Z0-9]{17}\b", re.IGNORECASE)
@@ -21,8 +22,13 @@ def after_insert_communication(doc, method=None):
 	if not payload:
 		return
 
-	lead = upsert_lead(payload, source="Email", source_communication=doc.name)
-	_link_communication(doc, lead.name)
+	if intake_review_required():
+		review = create_intake_review(payload, source="Email", source_communication=doc.name)
+		_link_communication(doc, review.name, "WIT Intake Review")
+		return
+
+	lead = upsert_lead(payload, source="Email", source_communication=doc.name, bypass_review=True)
+	_link_communication(doc, lead.name, "Lead")
 
 
 def retry_unprocessed_lead_communications():
@@ -86,6 +92,7 @@ def parse_communication(doc):
 
 
 def _is_lead_mailbox_message(doc):
+	lead_mailbox = get_lead_mailbox()
 	fields = [
 		getattr(doc, "recipients", ""),
 		getattr(doc, "cc", ""),
@@ -94,7 +101,7 @@ def _is_lead_mailbox_message(doc):
 		getattr(doc, "sender", ""),
 		getattr(doc, "email_from", ""),
 	]
-	return LEADS_MAILBOX in " ".join(str(value or "").lower() for value in fields)
+	return lead_mailbox in " ".join(str(value or "").lower() for value in fields)
 
 
 def _communication_text(doc):
@@ -109,10 +116,10 @@ def _strip_html(text):
 	return TAG_RE.sub(" ", text)
 
 
-def _link_communication(doc, lead_name):
+def _link_communication(doc, reference_name, reference_doctype):
 	try:
-		doc.db_set("reference_doctype", "Lead", update_modified=False)
-		doc.db_set("reference_name", lead_name, update_modified=False)
+		doc.db_set("reference_doctype", reference_doctype, update_modified=False)
+		doc.db_set("reference_name", reference_name, update_modified=False)
 	except Exception:
 		frappe.log_error(frappe.get_traceback(), "WIT lead communication link failed")
 
