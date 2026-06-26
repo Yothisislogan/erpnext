@@ -1,0 +1,68 @@
+:root {
+	--wit-blue: #00AEEF;
+	--wit-blue-dark: #007EAE;
+	--wit-ink: #06121D;
+	--wit-soft-blue: rgba(0, 174, 239, 0.1);
+	--wit-border: rgba(0, 174, 239, 0.28);
+}
+
+/* Keep the branding light so ERPNext remains usable and accessible. */
+[data-page-route="Form/Lead"] .layout-main-section-wrapper {
+	border-top: 4px solid var(--wit-blue);
+}
+
+[data-page-route="Form/Lead"] .form-tabs-list .nav-link.active,
+[data-page-route="Form/Lead"] .form-tabs-list .nav-link:hover {
+	color: var(--wit-blue-dark);
+}
+
+[data-page-route="Form/Lead"] .form-dashboard .comment-box[data-color="orange"] {
+	border-left: 4px solid var(--wit-blue);
+	background: var(--wit-soft-blue);
+}
+
+[data-page-route="Form/Lead"] .btn-primary,
+[data-page-route="Form/Lead"] .standard-actions .btn-primary {
+	background-color: var(--wit-blue);
+	border-color: var(--wit-blue);
+}
+
+[data-page-route="Form/Lead"] .btn-primary:hover,
+[data-page-route="Form/Lead"] .standard-actions .btn-primary:hover {
+	background-color: var(--wit-blue-dark);
+	border-color: var(--wit-blue-dark);
+}
+
+[data-fieldname="custom_wit_insurance_tab"] .section-head,
+[data-fieldname="custom_driver_vehicle_section"] .section-head,
+[data-fieldname="custom_incident_section"] .section-head,
+[data-fieldname="custom_follow_up_rules_section"] .section-head {
+	color: var(--wit-ink);
+	border-left: 4px solid var(--wit-blue);
+	padding-left: 10px;
+}
+
+[data-fieldname="custom_missing_information"] .control-input-wrapper,
+[data-fieldname="custom_vin_decode_status"] .control-input-wrapper {
+	background: var(--wit-soft-blue);
+	border: 1px solid var(--wit-border);
+	border-radius: 8px;
+	padding: 6px;
+}
+
+.wit-insurance-banner {
+	background: linear-gradient(90deg, rgba(0, 174, 239, 0.18), rgba(0, 174, 239, 0.04));
+	border: 1px solid var(--wit-border);
+	border-left: 5px solid var(--wit-blue);
+	border-radius: 10px;
+	margin-bottom: 12px;
+	padding: 10px 12px;
+}
+
+.wit-insurance-banner strong {
+	color: var(--wit-ink);
+}
+
+.wit-insurance-banner small {
+	color: var(--text-muted);
+}
