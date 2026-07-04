@@ -1,3 +1,4 @@
+import hmac
 import json
 
 import frappe
@@ -7,6 +8,8 @@ from wit_insurance.matching import find_lead_match
 from wit_insurance.settings import default_lead_owner, intake_review_required, voip_api_token
 from wit_insurance.vin import normalize_vin
 
+MAX_VOIP_PAYLOAD_BYTES = 256 * 1024
+
 
 @frappe.whitelist(methods=["POST"])
 def upsert_lead_from_call(**kwargs):
@@ -15,7 +18,7 @@ def upsert_lead_from_call(**kwargs):
 	Endpoint:
 	/api/method/wit_insurance.lead_intake.upsert_lead_from_call
 	"""
-	_validate_voip_token_if_configured()
+	_validate_voip_token()
 	payload = _payload_from_request(kwargs)
 	if intake_review_required():
 		from wit_insurance.intake_review import create_intake_review
@@ -63,17 +66,22 @@ def _payload_from_request(kwargs):
 		return kwargs
 
 	if frappe.request and frappe.request.data:
+		if len(frappe.request.data) > MAX_VOIP_PAYLOAD_BYTES:
+			frappe.throw("VOIP payload is too large", frappe.ValidationError)
 		data = frappe.request.data.decode("utf-8")
 		if data:
-			return json.loads(data)
+			payload = json.loads(data)
+			if not isinstance(payload, dict):
+				frappe.throw("VOIP payload must be a JSON object", frappe.ValidationError)
+			return payload
 
 	return frappe.form_dict or {}
 
 
-def _validate_voip_token_if_configured():
+def _validate_voip_token():
 	expected = voip_api_token()
 	if not expected:
-		return
+		frappe.throw("VOIP API token is not configured", frappe.PermissionError)
 
 	provided = None
 	if frappe.request:
@@ -81,7 +89,7 @@ def _validate_voip_token_if_configured():
 	if provided and provided.startswith("Bearer "):
 		provided = provided[7:]
 
-	if provided != expected:
+	if not provided or not hmac.compare_digest(str(provided), str(expected)):
 		frappe.throw("Invalid VOIP token", frappe.PermissionError)
 
 

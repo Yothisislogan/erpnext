@@ -24,9 +24,12 @@ SALE_FIELDS = [
 	"notes",
 ]
 
+MANAGER_ROLES = {"System Manager", "Sales Manager"}
+
 
 @frappe.whitelist()
 def summary(scope="agency", period="MTD", from_date=None, to_date=None):
+	scope = _secure_scope(scope)
 	start, end = _period_bounds(period, from_date, to_date)
 	conditions, values = _base_conditions(scope, start, end)
 
@@ -93,6 +96,7 @@ def summary(scope="agency", period="MTD", from_date=None, to_date=None):
 
 @frappe.whitelist()
 def leaderboard(metric="premium", scope="agency", period="MTD", from_date=None, to_date=None, business_type=None, carrier=None):
+	scope = _secure_scope(scope)
 	start, end = _period_bounds(period, from_date, to_date)
 	conditions, values = _base_conditions(scope, start, end)
 	if business_type:
@@ -125,6 +129,7 @@ def leaderboard(metric="premium", scope="agency", period="MTD", from_date=None, 
 
 @frappe.whitelist()
 def list_sales(scope="agency", period="MTD", from_date=None, to_date=None, status=None, search=None):
+	scope = _secure_scope(scope)
 	start, end = _period_bounds(period, from_date, to_date)
 	filters = {"sales_date": ["between", [start, end]]}
 	if status:
@@ -190,6 +195,21 @@ def _payload(kwargs):
 	if frappe.request and frappe.request.json:
 		return frappe._dict(frappe.request.json)
 	return frappe._dict(frappe.form_dict or {})
+
+
+def _secure_scope(scope):
+	if not frappe.has_permission("WIT Sale", "read"):
+		frappe.throw("Not permitted to read WIT Sale", frappe.PermissionError)
+	if (scope or "agency").lower() == "mine":
+		return "mine"
+	if not _has_manager_role():
+		return "mine"
+	return "agency"
+
+
+def _has_manager_role():
+	roles = set(frappe.get_roles(frappe.session.user))
+	return bool(roles & MANAGER_ROLES)
 
 
 def _period_bounds(period, from_date=None, to_date=None):
