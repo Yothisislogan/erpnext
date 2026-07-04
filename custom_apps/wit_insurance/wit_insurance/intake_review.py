@@ -6,6 +6,7 @@ from wit_insurance.attachments import link_communication_files
 from wit_insurance.matching import find_lead_candidates
 
 MAX_STORED_PAYLOAD_CHARS = 200_000
+MAX_LONG_TEXT_PREVIEW_CHARS = 4_000
 
 
 def create_intake_review(payload: dict, source: str = "API", source_communication: str | None = None):
@@ -81,9 +82,25 @@ def _assert_review_permission(review, require_lead_create: bool = False):
 
 def _safe_json(value) -> str:
 	content = json.dumps(value, indent=2, default=str)
-	if len(content) > MAX_STORED_PAYLOAD_CHARS:
-		return content[:MAX_STORED_PAYLOAD_CHARS] + "\n... truncated for safety"
-	return content
+	if len(content) <= MAX_STORED_PAYLOAD_CHARS:
+		return content
+
+	if isinstance(value, dict):
+		compact = dict(value)
+		for key in ("call_summary", "transcript", "raw_transcript", "content", "email_body"):
+			if compact.get(key):
+				compact[key] = str(compact[key])[:MAX_LONG_TEXT_PREVIEW_CHARS] + "\n... truncated for safety"
+		compact["_truncated_for_safety"] = True
+		return json.dumps(compact, indent=2, default=str)
+
+	return json.dumps(
+		{
+			"_truncated_for_safety": True,
+			"preview": content[:MAX_LONG_TEXT_PREVIEW_CHARS],
+		},
+		indent=2,
+		default=str,
+	)
 
 
 def _apply_review_edits_to_payload(review, payload):
