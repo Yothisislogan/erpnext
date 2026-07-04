@@ -14,9 +14,20 @@ VIN_RE = re.compile(r"\b[A-HJ-NPR-Z0-9]{17}\b", re.IGNORECASE)
 DATE_RE = re.compile(r"\b(\d{4}-\d{2}-\d{2}|\d{1,2}[/-]\d{1,2}[/-]\d{2,4})\b")
 TAG_RE = re.compile(r"<[^>]+>")
 
+IGNORE_EMAIL_LOCAL_PARTS = {"leads", "no-reply", "noreply", "postmaster", "mailer-daemon"}
+
 
 def after_insert_communication(doc, method=None):
+	try:
+		_process_communication(doc)
+	except Exception:
+		frappe.log_error(frappe.get_traceback(), "WIT email lead parsing failed")
+
+
+def _process_communication(doc):
 	if not _is_lead_mailbox_message(doc):
+		return
+	if _already_processed(doc):
 		return
 
 	payload = parse_communication(doc)
@@ -44,7 +55,7 @@ def retry_unprocessed_lead_communications():
 	)
 	for row in communications:
 		doc = frappe.get_doc("Communication", row.name)
-		if _is_lead_mailbox_message(doc) and not getattr(doc, "reference_name", None):
+		if _is_lead_mailbox_message(doc) and not _already_processed(doc):
 			after_insert_communication(doc)
 
 
@@ -54,7 +65,7 @@ def parse_communication(doc):
 		return {}
 
 	sender = getattr(doc, "sender", None) or getattr(doc, "email_from", None)
-	email = _first_email(text) or _first_email(sender or "")
+	email = _first_lead_email(sender or "") or _first_lead_email(text)
 	phone = _first_phone(text)
 	name = _label_value(text, ["name", "insured name", "customer name", "applicant name"])
 	address = _label_value(text, ["address", "street address", "garaging address"])
@@ -96,15 +107,27 @@ def parse_communication(doc):
 
 def _is_lead_mailbox_message(doc):
 	lead_mailbox = get_lead_mailbox()
+	sent_or_received = (getattr(doc, "sent_or_received", "") or "").lower()
+	if sent_or_received and sent_or_received not in {"received", "inbox"}:
+		return False
+
 	fields = [
 		getattr(doc, "recipients", ""),
+		getattr(doc, "to", ""),
 		getattr(doc, "cc", ""),
 		getattr(doc, "bcc", ""),
 		getattr(doc, "email_account", ""),
-		getattr(doc, "sender", ""),
-		getattr(doc, "email_from", ""),
 	]
 	return lead_mailbox in " ".join(str(value or "").lower() for value in fields)
+
+
+def _already_processed(doc):
+	if getattr(doc, "reference_doctype", None) in {"Lead", "WIT Intake Review"} and getattr(doc, "reference_name", None):
+		return True
+	try:
+		return bool(frappe.db.exists("WIT Intake Review", {"source_communication": doc.name}))
+	except Exception:
+		return False
 
 
 def _communication_text(doc):
@@ -127,9 +150,14 @@ def _link_communication(doc, reference_name, reference_doctype):
 		frappe.log_error(frappe.get_traceback(), "WIT lead communication link failed")
 
 
-def _first_email(text):
-	match = EMAIL_RE.search(str(text or ""))
-	return match.group(0) if match else None
+def _first_lead_email(text):
+	lead_mailbox = get_lead_mailbox()
+	for match in EMAIL_RE.finditer(str(text or "")):
+		email = match.group(0).lower()
+		local = email.split("@", 1)[0]
+		if email != lead_mailbox and local not in IGNORE_EMAIL_LOCAL_PARTS:
+			return email
+	return None
 
 
 def _first_phone(text):
