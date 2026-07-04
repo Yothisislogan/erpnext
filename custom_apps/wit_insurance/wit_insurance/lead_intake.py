@@ -1,3 +1,4 @@
+import hmac
 import json
 
 import frappe
@@ -88,7 +89,7 @@ def _validate_voip_token():
 	if provided and provided.startswith("Bearer "):
 		provided = provided[7:]
 
-	if not provided or not frappe.utils.password.constant_time_compare(str(provided), str(expected)):
+	if not provided or not hmac.compare_digest(str(provided), str(expected)):
 		frappe.throw("Invalid VOIP token", frappe.PermissionError)
 
 
